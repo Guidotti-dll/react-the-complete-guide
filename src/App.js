@@ -5,7 +5,6 @@ import { initialExpenses } from "./initialExpenses";
 
 const App = () => {
   const [expenses, setExpenses] = useState(initialExpenses);
-  console.log(expenses);
 
   const addExpenseHandler = (expense) => {
     setExpenses((prevExpenses) => {
