@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./styles.module.css";
 import mealsImage from "../../../assets/meals.jpg";
 import HeaderCartButton from "../HeaderCartButton";
