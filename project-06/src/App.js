@@ -1,8 +1,15 @@
+import React from "react";
+import Header from "./Components/Layout/Header";
+import Meals from "./Components/Meals";
+
 function App() {
   return (
-    <div>
-      <h2>Let's get started!</h2>
-    </div>
+    <>
+      <Header />
+      <main>
+        <Meals />
+      </main>
+    </>
   );
 }
 
