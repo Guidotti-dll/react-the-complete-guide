@@ -1,18 +1,32 @@
 import classes from "./QuoteItem.module.css";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-const QuoteItem = (props) => {
+const QuoteItem = ({ id, text, author }) => {
+  const { push } = useHistory();
+  const goToDetail = () => {
+    push({
+      pathname: `/quotes/${id}`,
+      state: {
+        quote: {
+          id,
+          text,
+          author,
+        },
+      },
+    });
+  };
+
   return (
     <li className={classes.item}>
       <figure>
         <blockquote>
-          <p>{props.text}</p>
+          <p>{text}</p>
         </blockquote>
-        <figcaption>{props.author}</figcaption>
+        <figcaption>{author}</figcaption>
       </figure>
-      <Link to={`/quotes/${props.id}`} className="btn">
+      <button onClick={goToDetail} className="btn">
         View Fullscreen
-      </Link>
+      </button>
     </li>
   );
 };

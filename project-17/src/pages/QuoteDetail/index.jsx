@@ -1,32 +1,40 @@
 import React from "react";
-import { useParams, Route, Link, useRouteMatch } from "react-router-dom";
+import {
+  Route,
+  useRouteMatch,
+  useLocation,
+  useHistory,
+} from "react-router-dom";
 import Comments from "../../components/comments/Comments";
 import HighlightedQuote from "../../components/quotes/HighlightedQuote";
 
-const DUMMY_QUOTES = [
-  { id: "q1", author: "Guidotti", text: "Learning React is fun" },
-  { id: "q2", author: "John", text: "Learning React is great!" },
-];
-
 const QuoteDetail = () => {
-  const params = useParams();
-  const { path, url } = useRouteMatch();
-  const { quoteId } = params;
-
-  const quote = DUMMY_QUOTES.find((quote) => quote.id === quoteId);
+  const { path } = useRouteMatch();
+  const { state, pathname } = useLocation();
+  const { push } = useHistory();
+  const { quote } = state;
 
   if (!quote) {
     return <p>No quote found!</p>;
   }
+
+  const goToComment = () => {
+    push({
+      pathname: `${pathname}/comments`,
+      state: {
+        quote,
+      },
+    });
+  };
 
   return (
     <>
       <HighlightedQuote text={quote.text} author={quote.author} />
       <Route path={path} exact>
         <div className="centered">
-          <Link className="btn--flat" to={`${url}/comments`}>
+          <button onClick={goToComment} className="btn--flat">
             Load comments
-          </Link>
+          </button>
         </div>
       </Route>
       <Route path={`${path}/comments`}>
