@@ -18,8 +18,30 @@ const DUMMY_MEETUPS = [
     description: "most mountains",
   },
 ];
-const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />;
+const HomePage = ({ meetups }) => {
+  return <MeetupList meetups={meetups} />;
 };
+
+// using SSR
+// export async function getServerSideProps(context) {
+//   const { req, res } = context;
+//   // fetch data from API
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS,
+//     },
+//   };
+// }
+
+// using SSG
+export async function getStaticProps() {
+  // fetch data from API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    revalidate: 1,
+  };
+}
 
 export default HomePage;
