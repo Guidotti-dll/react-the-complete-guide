@@ -1,23 +1,6 @@
+import { MongoClient } from "mongodb";
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "A first meetup",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWBjyR556y3eO5lxknx7RChf7DQRIffDZvSqYwdkIfQa6pdT69wvrSfaCwfGJPPbDBqt4&usqp=CAU",
-    address: "BC Canada",
-    description: "mountains",
-  },
-  {
-    id: "m2",
-    title: "A second meetup",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWBjyR556y3eO5lxknx7RChf7DQRIffDZvSqYwdkIfQa6pdT69wvrSfaCwfGJPPbDBqt4&usqp=CAU",
-    address: "BC Canada",
-    description: "most mountains",
-  },
-];
 const HomePage = ({ meetups }) => {
   return <MeetupList meetups={meetups} />;
 };
@@ -36,9 +19,25 @@ const HomePage = ({ meetups }) => {
 // using SSG
 export async function getStaticProps() {
   // fetch data from API
+
+  const client = await MongoClient.connect("mongodb://172.17.0.1:27017", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find().toArray();
+  console.log(meetups);
+  client.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
     revalidate: 1,
   };

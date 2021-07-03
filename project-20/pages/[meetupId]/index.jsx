@@ -1,7 +1,6 @@
+import { MongoClient, ObjectID } from "mongodb";
 import MeetupDetail from "../../components/meetups/MeetupDetail";
-const MeetupDetails = ({
-  meetup: { image, title, address, description, id },
-}) => {
+const MeetupDetails = ({ meetup: { image, title, address, description } }) => {
   return (
     <MeetupDetail
       image={image}
@@ -13,20 +12,21 @@ const MeetupDetails = ({
 };
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect("mongodb://172.17.0.1:27017", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  client.close();
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: "m1",
-        },
+    paths: meetups.map((meetup) => ({
+      params: {
+        meetupId: meetup._id.toString(),
       },
-      {
-        params: {
-          meetupId: "m2",
-        },
-      },
-    ],
+    })),
   };
 }
 
@@ -34,17 +34,25 @@ export async function getStaticProps(context) {
   // fetch data from API
 
   const { meetupId } = context.params;
-  console.log(meetupId);
+  const client = await MongoClient.connect("mongodb://172.17.0.1:27017", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectID(meetupId),
+  });
+  client.close();
 
   return {
     props: {
       meetup: {
-        id: meetupId,
-        image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWBjyR556y3eO5lxknx7RChf7DQRIffDZvSqYwdkIfQa6pdT69wvrSfaCwfGJPPbDBqt4&usqp=CAU",
-        title: "Mountains",
-        address: "BC, canada",
-        description: "a great mountain",
+        id: selectedMeetup._id.toString(),
+        title: selectedMeetup.title,
+        address: selectedMeetup.address,
+        description: selectedMeetup.description,
+        image: selectedMeetup.image,
       },
     },
     revalidate: 10,
