@@ -19,7 +19,7 @@ const MeetupDetails = ({ meetup: { image, title, address, description } }) => {
 };
 
 export async function getStaticPaths() {
-  const client = await MongoClient.connect("mongodb://172.17.0.1:27017", {
+  const client = await MongoClient.connect(process.env.URLPROD, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });

@@ -32,7 +32,7 @@ const HomePage = ({ meetups }) => {
 export async function getStaticProps() {
   // fetch data from API
 
-  const client = await MongoClient.connect("mongodb://172.17.0.1:27017", {
+  const client = await MongoClient.connect(process.env.URLPROD, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
