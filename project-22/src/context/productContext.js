@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 
-const initialState = [
+export const initialState = [
   {
     id: "p1",
     title: "Red Scarf",
