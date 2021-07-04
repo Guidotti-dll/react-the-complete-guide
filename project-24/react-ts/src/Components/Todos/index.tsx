@@ -1,13 +1,20 @@
+import styles from "./styles.module.css";
 import Todo from "../../models/todo";
+import TodoItem from "../TodoItem";
 
-const Todos: React.FC<{ items: Todo[] }> = (props) => {
-  return (
-    <ul>
-      {props.items.map((item) => (
-        <li key={item.id}>{item.text}</li>
-      ))}
-    </ul>
-  );
-};
+const Todos: React.FC<{ items: Todo[]; onRemoveTodo: (id: string) => void }> =
+  ({ items, onRemoveTodo }) => {
+    return (
+      <ul className={styles.todos}>
+        {items.map((item) => (
+          <TodoItem
+            key={item.id}
+            text={item.text}
+            onRemoveTodo={onRemoveTodo.bind(null, item.id)}
+          />
+        ))}
+      </ul>
+    );
+  };
 
 export default Todos;
