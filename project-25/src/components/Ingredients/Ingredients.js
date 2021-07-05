@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -8,11 +8,25 @@ const Ingredients = () => {
   const [ingredients, setIngredients] = useState([]);
 
   const addIngredientHandler = (ingredient) => {
-    console.log(ingredient);
-    setIngredients((prevState) => [
-      ...prevState,
-      { id: Math.random().toString(), ...ingredient },
-    ]);
+    fetch(
+      "https://react-http-c71fc-default-rtdb.firebaseio.com/ingredients.json",
+      {
+        method: "POST",
+        body: JSON.stringify(ingredient),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setIngredients((prevState) => [
+          ...prevState,
+          { id: data.name, ...ingredient },
+        ]);
+      });
   };
 
   const removeIngredientHandler = (id) => {
@@ -21,12 +35,20 @@ const Ingredients = () => {
     );
   };
 
+  const filterIngredientsHandler = useCallback((filter) => {
+    setIngredients(filter);
+  }, []);
+
+  useEffect(() => {
+    console.log("RENDERING INGREDIENTS", ingredients);
+  }, [ingredients]);
+
   return (
     <div className="App">
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filterIngredientsHandler} />
         <IngredientList
           ingredients={ingredients}
           onRemoveItem={removeIngredientHandler}
