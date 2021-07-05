@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -56,7 +56,7 @@ const Ingredients = () => {
   // const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState();
 
-  const addIngredientHandler = (ingredient) => {
+  const addIngredientHandler = useCallback((ingredient) => {
     httpDispatch({ type: "SEND" });
     fetch(
       "https://react-http-c71fc-default-rtdb.firebaseio.com/ingredients.json",
@@ -79,9 +79,9 @@ const Ingredients = () => {
         // ]);
         dispatch({ type: "ADD", ingredient: { id: data.name, ...ingredient } });
       });
-  };
+  }, []);
 
-  const removeIngredientHandler = (id) => {
+  const removeIngredientHandler = useCallback((id) => {
     httpDispatch({ type: "SEND" });
     fetch(
       `https://react-http-c71fc-default-rtdb.firebaseio.com/ingredients/${id}.json`,
@@ -101,11 +101,11 @@ const Ingredients = () => {
         // setError("Something went wrong");
         // setIsLoading(false);
       });
-  };
+  }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     httpDispatch({ type: "CLEAR" });
-  };
+  }, []);
 
   const filterIngredientsHandler = useCallback((filteredIngredients) => {
     // setIngredients(filteredIngredients);
@@ -115,6 +115,15 @@ const Ingredients = () => {
   useEffect(() => {
     console.log("RENDERING INGREDIENTS", ingredients);
   }, [ingredients]);
+
+  const ingredientList = useMemo(() => {
+    return (
+      <IngredientList
+        ingredients={ingredients}
+        onRemoveItem={removeIngredientHandler}
+      />
+    );
+  }, [ingredients, removeIngredientHandler]);
 
   return (
     <div className="App">
@@ -128,10 +137,7 @@ const Ingredients = () => {
 
       <section>
         <Search onLoadIngredients={filterIngredientsHandler} />
-        <IngredientList
-          ingredients={ingredients}
-          onRemoveItem={removeIngredientHandler}
-        />
+        {ingredientList}
       </section>
     </div>
   );

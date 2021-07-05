@@ -5,6 +5,7 @@ import LoadingIndicator from "../UI/LoadingIndicator";
 import "./IngredientForm.css";
 
 const IngredientForm = React.memo(({ onAddIngredient, loading }) => {
+  console.log("RENDERING INGREDIENTS FORM");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const submitHandler = (event) => {
