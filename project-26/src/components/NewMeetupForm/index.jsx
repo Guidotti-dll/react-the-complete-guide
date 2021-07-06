@@ -2,13 +2,14 @@ import React, { useRef } from "react";
 import styles from "./styles.module.css";
 import Card from "../Card";
 
-const NewMeetupForm = () => {
+const NewMeetupForm = ({ onAddNewMeetup }) => {
   const titleInputRef = useRef();
   const imageInputRef = useRef();
   const addressInputRef = useRef();
   const descriptionInputRef = useRef();
 
   const submitHandler = (event) => {
+    event.preventDefault();
     const newMeetup = {
       title: titleInputRef.current.value,
       image: imageInputRef.current.value,
@@ -16,8 +17,7 @@ const NewMeetupForm = () => {
       description: descriptionInputRef.current.value,
     };
 
-    console.log(newMeetup);
-    event.preventDefault();
+    onAddNewMeetup(newMeetup);
   };
 
   return (
